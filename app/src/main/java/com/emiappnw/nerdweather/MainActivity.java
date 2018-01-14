@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Checks for location changes
         locationListener = new LocationListener() {
+
             @Override
             public void onLocationChanged(Location location) {
 
@@ -86,17 +87,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-            // No coding necessary
+
+                // No coding necessary
             }
 
             @Override
             public void onProviderEnabled(String s) {
-            // No coding necessary
+
+                // No coding necessary
             }
 
             // Option to enable GPS if it is disabled
             @Override
             public void onProviderDisabled(String s) {
+
+                Toast.makeText(getApplicationContext(), "Please turn on location to continue", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
 
@@ -107,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
     // Permission check
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 420:
@@ -120,15 +126,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void request_location(){
+
         // Permission check if API level >= 23
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
                         ,420);
             }
             return;
         }
-        // Location updates every second if permissions are granted
+        // Location requested every second if permissions are granted
         locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
 
     }
