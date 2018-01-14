@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -32,23 +33,27 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // accesses location
+        // Accesses location
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        //checks for location changes
+        // Checks for location changes
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
 
-                //              Begin API Stuff              //
+                // Gets latitude and longitude and converts to String
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                String latStr = String.valueOf(latitude);
+                String lonStr = String.valueOf(longitude);
+
+                //--------------Begin API Stuff------------//
                 currentLocationField = findViewById(R.id.currentLoc);
                 weatherDescriptionField = findViewById(R.id.weatherDescription);
                 currentTempField = findViewById(R.id.currentTemp);
@@ -73,32 +78,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                //              End API Stuff              //
-
-                // gets latitude and longitude and converts to String
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                String latStr = String.valueOf(latitude);
-                String lonStr = String.valueOf(longitude);
-
-                //sends lat and long to API
                 asyncTask.execute(latStr, lonStr); // ("Latitude", "Longitude")
+
+                //--------------End API Stuff------------//
 
             }
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-            //not needed
+            // No coding necessary
             }
 
             @Override
             public void onProviderEnabled(String s) {
-            //not needed
+            // No coding necessary
             }
 
+            // Option to enable GPS if it is disabled
             @Override
             public void onProviderDisabled(String s) {
-                // option to enable GPS if it is disabled
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
 
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    // permission check
+    // Permission check
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 420:
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void request_location(){
-        // permission check if API level >= 23
+        // Permission check if API level >= 23
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        // location gets requested every second
+        // Location updates every second if permissions are granted
         locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
 
     }
