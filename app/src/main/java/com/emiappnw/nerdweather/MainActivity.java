@@ -3,6 +3,7 @@ package com.emiappnw.nerdweather;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -25,19 +26,36 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import com.bluejamesbond.text.DocumentView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView currentLocationField, weatherDescriptionField, currentTempField, minTempCField, maxTempCField, WindField, HumidityField, PressureField;
     private LocationManager locationManager;
     private LocationListener locationListener;
+
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+
+    TextView currentLocView, weatherDescriptionView, currentTempView, WindView, HumidityView, PressureView, maxTempCView, maxTempFView, maxDetailTextView, minTempCView, minTempFView, minDetailTextView;
+    DocumentView FactView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
         // Accesses location
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -51,61 +69,91 @@ public class MainActivity extends AppCompatActivity {
                 // Gets latitude and longitude and converts to String
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                String latStr = String.valueOf(latitude);
-                String lonStr = String.valueOf(longitude);
+                final String latStr = String.valueOf(latitude);
+                final String lonStr = String.valueOf(longitude);
 
-                //--------------Begin API Stuff------------//
-                currentLocationField = findViewById(R.id.currentLoc);
-                weatherDescriptionField = findViewById(R.id.weatherDescription);
-                currentTempField = findViewById(R.id.currentTemp);
-                // minTempCField = findViewById(R.id.minTempC); // We don't need minimum temp at the moment
-                // maxTempCField = findViewById(R.id.maxTempC); // We don't need maximum temp at the moment
-                WindField = findViewById(R.id.Wind);
-                HumidityField = findViewById(R.id.Humidity);
-                PressureField = findViewById(R.id.Pressure);
+                //--------------Weather API Stuff--------------//
+                currentLocView = findViewById(R.id.currentLoc);
+                weatherDescriptionView = findViewById(R.id.weatherDescription);
+                currentTempView = findViewById(R.id.currentTemp);
+                WindView = findViewById(R.id.Wind);
+                HumidityView = findViewById(R.id.Humidity);
+                PressureView = findViewById(R.id.Pressure);
 
                 WeatherAPI.placeIdTask asyncTask = new WeatherAPI.placeIdTask(new WeatherAPI.AsyncResponse() {
-                    public void processFinish(String weather_location, String weather_description, String weather_temperature, String weather_temperature_min, String weather_temperature_max, String weather_wind, String weather_humidity, String weather_pressure) {
+                    public void processFinish(String weather_location, String weather_description, String weather_temperature, String weather_wind, String weather_humidity, String weather_pressure) {
+                        currentLocView.setText(weather_location);
+                        weatherDescriptionView.setText(weather_description);
+                        currentTempView.setText(weather_temperature+"°");
+                        WindView.setText("W: "+weather_wind+ " m/s");
+                        HumidityView.setText("H: "+weather_humidity+ "%");
+                        PressureView.setText("P: "+weather_pressure+ " hPa");
 
-                        currentLocationField.setText(weather_location);
-                        weatherDescriptionField.setText(weather_description);
-                        currentTempField.setText(weather_temperature);
-                        // minTempCField.setText(weather_temperature_min); // We don't need minimum temp at the moment
-                        // maxTempCField.setText(weather_temperature_max); // We don't need maximum temp at the moment
-                        WindField.setText("W: "+weather_wind);
-                        HumidityField.setText("H: "+weather_humidity);
-                        PressureField.setText("P: "+weather_pressure);
+                        // Save current Temp and Location in SharedPreferences
+                        editor.putString("tempStored", weather_temperature);
+                        editor.putString("locationStored", weather_location);
+                        editor.apply();
+
+                        // Checks if this is the first time the app is running and sets default values for the PopupWindow
+                        if (sharedPref.getBoolean("firstRun", true)) {
+                            editor.putString("MaxTCStored", sharedPref.getString("tempStored", ""));
+                            editor.putString("MinTCStored", sharedPref.getString("tempStored", ""));
+                            editor.putString("MaxLocStored", sharedPref.getString("locationStored", ""));
+                            editor.putString("MinLocStored", sharedPref.getString("locationStored", ""));
+                            editor.putBoolean("firstRun", false);
+                            editor.apply();
+                        }
+
+                        //************* Facts JSON Parsing *************//
+                        StringBuilder json = new StringBuilder();
+                        try {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("facts.json")));
+                            String temp;
+                            while ((temp=reader.readLine())!=null)
+                                json.append(temp).append("\n");
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            JSONObject data = new JSONObject(json.toString());
+
+                            JSONObject main = data.getJSONObject("temps");
+                            String name = main.getString(weather_temperature);
+
+                            FactView = findViewById(R.id.Fact);
+                            FactView.setText(name);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        //************* Facts JSON Parsing *************//
 
                     }
                 });
 
                 asyncTask.execute(latStr, lonStr); // ("Latitude", "Longitude")
-
-                //--------------End API Stuff------------//
+                //--------------Weather API Stuff--------------//
 
             }
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                // No coding necessary
+            // No coding necessary
             }
 
             @Override
             public void onProviderEnabled(String s) {
-
-                // No coding necessary
+            // No coding necessary
             }
 
             // Option to enable GPS if it is disabled
             @Override
             public void onProviderDisabled(String s) {
-
                 Toast.makeText(getApplicationContext(), "Please turn on location to continue", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
-
             }
         };
 
@@ -113,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Permission check
+
+    // Location permission check
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -130,16 +179,17 @@ public class MainActivity extends AppCompatActivity {
         // Permission check if API level >= 23
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
-                        ,420);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET},420);
             }
+
             return;
         }
-        // Location requested every second if permissions are granted
+
+        // Location requested every second if permissions are granted using the GPS sensor
         locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
 
     }
+
 
     public void onButtonShowPopupWindowClick(View view) {
 
@@ -158,10 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         View popupView = inflater.inflate(R.layout.dialog_temp_stats, null);
 
-
-
         // Create the popup window
-        boolean focusable = true; // Lets taps outside the popup also dismiss it
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
         // Animation
@@ -172,6 +219,50 @@ public class MainActivity extends AppCompatActivity {
         // Show popup
         popupWindow.showAtLocation(mainLayout, Gravity.CENTER_HORIZONTAL, 0, -300);
 
+
+        //===================== PopupWindow Stuff =====================//
+        // Initial Data for the loop
+        int cTemp = Integer.parseInt(sharedPref.getString("tempStored", ""));
+        int maxC = Integer.parseInt(sharedPref.getString("MaxTCStored", ""));
+        int minC = Integer.parseInt(sharedPref.getString("MinTCStored", ""));
+
+        // The wheels of the bus go round and round...
+        if (cTemp >= maxC) {
+            maxC = cTemp;
+            int maxF = (int) (1.8*maxC)+32;
+            String MaxTC = Integer.toString(maxC);
+            String MaxTF = Integer.toString(maxF);
+            editor.putString("MaxTCStored", MaxTC);
+            editor.putString("MaxTFStored", MaxTF);
+            editor.putString("MaxLocStored", sharedPref.getString("locationStored", ""));
+            editor.apply();
+        } else if (cTemp <= minC) {
+            minC = cTemp;
+            int minF = (int) (1.8*minC)+32;
+            String MinTC = Integer.toString(minC);
+            String MinTF = Integer.toString(minF);
+            editor.putString("MinTCStored", MinTC);
+            editor.putString("MinTFStored", MinTF);
+            editor.putString("MinLocStored", sharedPref.getString("locationStored", ""));
+            editor.apply();
+        }
+
+        maxTempCView = popupWindow.getContentView().findViewById(R.id.maxTempC);
+        maxTempFView = popupWindow.getContentView().findViewById(R.id.maxTempF);
+        maxDetailTextView = popupWindow.getContentView().findViewById(R.id.maxDetailText);
+        minTempCView = popupWindow.getContentView().findViewById(R.id.minTempC);
+        minTempFView = popupWindow.getContentView().findViewById(R.id.minTempF);
+        minDetailTextView = popupWindow.getContentView().findViewById(R.id.minDetailText);
+
+
+        maxTempCView.setText(sharedPref.getString("MaxTCStored", "")+" °C");
+        maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" °F");
+        maxDetailTextView.setText(sharedPref.getString("MaxLocStored", ""));
+        minTempCView.setText(sharedPref.getString("MinTCStored", "")+" °C");
+        minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" °F");
+        minDetailTextView.setText(sharedPref.getString("MinLocStored", ""));
+        //===================== PopupWindow Stuff =====================//
+
     }
 
     // Inject Calligraphy into Context
@@ -179,4 +270,5 @@ public class MainActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
 }

@@ -27,6 +27,29 @@
         android:text="44°C"
         app:fontPath="fonts/nevis.ttf"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/maxTempF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/maxDetailText"
+        android:layout_toEndOf="@+id/maxTempC"
+        android:layout_toRightOf="@+id/maxTempC"
+        android:text=" / -4 °F"
+        android:textColor="#8F8F8F"
+        android:textSize="18sp"
+        app:fontPath="fonts/nevis.ttf" />
+
+    <TextView
+        android:id="@+id/maxDetailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/maxTempC"
+        android:layout_toEndOf="@+id/maxImg"
+        android:layout_toRightOf="@+id/maxImg"
+        android:text="San Antonio, TX  -  JUL 14 2017"
+        app:fontPath="fonts/Lato-Regular.ttf" />
+
     <ImageView
         android:id="@+id/minImg"
         android:layout_alignLeft="@+id/maxImg"
@@ -46,43 +69,8 @@
         android:textSize="18sp"
         app:fontPath="fonts/nevis.ttf" />
 
-    <Button
-        android:layout_below="@+id/minImg"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Share"
-        app:fontPath="fonts/nevis.ttf"
-        android:textColor="@android:color/white"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/share_button"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"/>
-
     <TextView
-        android:id="@+id/maxDetailText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/maxTempC"
-        android:layout_toEndOf="@+id/maxImg"
-        android:layout_toRightOf="@+id/maxImg"
-        app:fontPath="fonts/Lato-Regular.ttf"
-        android:text="San Antonio, TX  -  JUL 14 2017" />
-
-    <TextView
-        android:id="@+id/minDetailText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/minTempC"
-        android:layout_toEndOf="@+id/minImg"
-        android:layout_toRightOf="@+id/minImg"
-        app:fontPath="fonts/Lato-Regular.ttf"
-        android:text="Dresden, Germany  -  DEC 12 2014" />
-
-    <TextView
-        android:id="@+id/maxTempF"
+        android:id="@+id/minTempF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/minTempC"
@@ -95,14 +83,28 @@
         app:fontPath="fonts/nevis.ttf" />
 
     <TextView
-        android:id="@+id/minTempF"
+        android:id="@+id/minDetailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/maxDetailText"
-        android:layout_toEndOf="@+id/maxTempC"
-        android:layout_toRightOf="@+id/maxTempC"
-        android:text=" / -4 °F"
-        android:textColor="#8F8F8F"
-        android:textSize="18sp"
+        android:layout_below="@+id/minTempC"
+        android:layout_toEndOf="@+id/minImg"
+        android:layout_toRightOf="@+id/minImg"
+        app:fontPath="fonts/Lato-Regular.ttf"
+        android:text="Dresden, Germany  -  DEC 12 2014" />
+
+    <Button
+        android:id="@+id/button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/minImg"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/share_button"
+        android:text="Share"
+        android:textColor="@android:color/white"
         app:fontPath="fonts/nevis.ttf" />
+
 </RelativeLayout>

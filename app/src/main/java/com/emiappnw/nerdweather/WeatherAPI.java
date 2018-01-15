@@ -13,44 +13,16 @@ import java.net.URL; // Self-explanatory.
 import java.util.Locale; // Self-explanatory.
 
 public class WeatherAPI {
+
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric";
     private static final String API_KEY = "d87d09e51607cadfe08107106806f23a";
 
 
-    // Get Weather Data from OpenWeatherMap API
-    public static JSONObject getWeatherJSON(String lat, String lon){
-        try {
-            URL url = new URL(String.format(API_URL, lat, lon));
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.addRequestProperty("x-api-key", API_KEY);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            StringBuffer json = new StringBuffer(1024);
-            String tmp="";
-            while((tmp=reader.readLine())!=null)
-                json.append(tmp).append("\n");
-            reader.close();
-
-            JSONObject data = new JSONObject(json.toString());
-
-            if(data.getInt("cod") != 200){
-                return null;
-            }
-            return data;
-        }
-        catch(Exception e) {
-            return null;
-        }
-    }
-
-
     public interface AsyncResponse {
-        void processFinish(String output1, String output2, String output3, String output4, String output5, String output6, String output7, String output8);
+        void processFinish(String output1, String output2, String output3, String output4, String output5, String output6);
     }
 
-
-    public static class placeIdTask extends AsyncTask<String, Void, JSONObject> {
+    public static class placeIdTask extends AsyncTask <String, Void, JSONObject> {
 
         public AsyncResponse delegate = null;
 
@@ -62,12 +34,12 @@ public class WeatherAPI {
         protected JSONObject doInBackground(String... params) {
 
             JSONObject jsonWeather = null;
+
             try {
                 jsonWeather = getWeatherJSON(params[0], params[1]);
             } catch (Exception e) {
                 Log.d("Error", "Cannot process JSON results", e);
             }
-
 
             return jsonWeather;
         }
@@ -80,22 +52,50 @@ public class WeatherAPI {
                     JSONObject details = json.getJSONArray("weather").getJSONObject(0);
                     JSONObject main = json.getJSONObject("main");
 
-
-                    String location = json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country");
+                    String location = json.getString("name") + ", " + json.getJSONObject("sys").getString("country");
                     String description = details.getString("description").toUpperCase(Locale.US);
-                    String temperature = String.format("%.0f", main.getDouble("temp"))+ "°";
-                    String temperature_min = String.format("%.0f", main.getDouble("temp_min"))+ "°";
-                    String temperature_max = String.format("%.0f", main.getDouble("temp_max"))+ "°";
-                    String wind = String.format("%.1f", json.getJSONObject("wind").getDouble("speed"))+ " m/s";
-                    String humidity = main.getString("humidity") + "%";
-                    String pressure = main.getString("pressure") + " hPa";
 
-                    delegate.processFinish(location, description, temperature, temperature_min, temperature_max, wind, humidity, pressure);
+                    //comment the line below for manual temperature input
+                    String temperature = String.format(Locale.US,"%.0f", main.getDouble("temp"));
 
+                    //uncomment the line below if you want to manually input temperatures
+//                    String temperature = "-9";
+
+                    String wind = String.format(Locale.US,"%.1f", json.getJSONObject("wind").getDouble("speed"));
+                    String humidity = main.getString("humidity");
+                    String pressure = main.getString("pressure");
+
+                    delegate.processFinish(location, description, temperature, wind, humidity, pressure);
                 }
             } catch (JSONException e) {
-                //Log.e(LOG_TAG, "Cannot process JSON results", e);
+                Log.e("Error", "Cannot assign JSON result to variables", e);
             }
+        }
+    }
+
+    // Get Weather Data from OpenWeatherMap API
+    public static JSONObject getWeatherJSON(String lat, String lon){
+        try {
+            URL url = new URL(String.format(API_URL, lat, lon));
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.addRequestProperty("x-api-key", API_KEY);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            StringBuilder json = new StringBuilder(1024);
+            String tmp;
+            while((tmp=reader.readLine())!=null)
+                json.append(tmp).append("\n");
+            reader.close();
+
+            JSONObject data = new JSONObject(json.toString());
+
+            if(data.getInt("cod") != 200){
+                return null;
+            }
+            return data;
+        } catch(Exception e) {
+            return null;
         }
     }
 }
