@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="weatherimg"
-        android:src="@drawable/testweatherimg"
+        android:src="@drawable/testweatherimg_morning"
         app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintDimensionRatio="9:10"
         app:layout_constraintEnd_toEndOf="parent"
