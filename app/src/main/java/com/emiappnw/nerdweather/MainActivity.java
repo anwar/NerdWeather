@@ -65,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Updates background on first run
-        background_updater();
-
         sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
+
+        // Updates background on first run
+        background_updater();
 
         // Accesses location
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 final String latStr = String.valueOf(latitude);
                 final String lonStr = String.valueOf(longitude);
 
-                //--------------Weather API Stuff--------------//
+                //-------------- Weather API Stuff --------------//
                 currentLocView = findViewById(R.id.currentLoc);
                 weatherDescriptionView = findViewById(R.id.weatherDescription);
                 currentTempView = findViewById(R.id.currentTemp);
@@ -124,48 +124,25 @@ public class MainActivity extends AppCompatActivity {
                             editor.apply();
                         }
 
-                        //************* Facts JSON Parsing *************//
-                        StringBuilder json = new StringBuilder();
-                        try {
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("facts.json")));
-                            String temp;
-                            while ((temp=reader.readLine())!=null)
-                                json.append(temp).append("\n");
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            JSONObject data = new JSONObject(json.toString());
-
-                            JSONObject main = data.getJSONObject("temps");
-                            String name = main.getString(weather_temperature);
-
-                            FactView = findViewById(R.id.Fact);
-                            FactView.setText(name);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        //************* Facts JSON Parsing *************//
+                        // Update the fact according to the current temperature
+                        facts_parser(weather_temperature);
 
                     }
                 });
 
                 asyncTask.execute(latStr, lonStr); // ("Latitude", "Longitude")
-                //--------------Weather API Stuff--------------//
+                //-------------- Weather API Stuff --------------//
 
             }
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
-            // No coding necessary
+                // No coding necessary
             }
 
             @Override
             public void onProviderEnabled(String s) {
-            // No coding necessary
+                // No coding necessary
             }
 
             // Option to enable GPS if it is disabled
@@ -214,20 +191,45 @@ public class MainActivity extends AppCompatActivity {
 
         weatherBgImg = findViewById(R.id.weatherBgImg);
         // repeated to get an updated hourOfDay if hourOfDay != hourOfDayToCheck
-        calendar = Calendar.getInstance();
         hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
 
         if (hourOfDay >= 6 && hourOfDay <= 12) {
             weatherBgImg.setImageResource(R.drawable.testweatherimg_morning);
-        }else if (hourOfDay >= 12 && hourOfDay <= 16){
+        } else if (hourOfDay >= 12 && hourOfDay <= 16) {
             weatherBgImg.setImageResource(R.drawable.testweatherimg_afternoon);
-        }else if(hourOfDay >=17 && hourOfDay<=21){
+        } else if (hourOfDay >= 17 && hourOfDay <= 21) {
             weatherBgImg.setImageResource(R.drawable.testweatherimg_evening);
-        }else if(hourOfDay>=21 || hourOfDay<6){
+        } else if (hourOfDay >= 21 || hourOfDay < 6) {
             weatherBgImg.setImageResource(R.drawable.testweatherimg_night);
         }
     }
 
+    public void facts_parser(String weather_temperature){
+
+        StringBuilder json = new StringBuilder();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("facts.json")));
+            String temp;
+            while ((temp=reader.readLine())!=null)
+                json.append(temp).append("\n");
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONObject data = new JSONObject(json.toString());
+
+            JSONObject main = data.getJSONObject("temps");
+            String name = main.getString(weather_temperature);
+
+            FactView = findViewById(R.id.Fact);
+            FactView.setText(name);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void onButtonShowPopupWindowClick(View view) {
 
