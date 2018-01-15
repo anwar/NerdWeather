@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             weatherBgImg.setImageResource(R.drawable.testweatherimg_afternoon);
         }else if(hourOfDay >=17 && hourOfDay<=21){
             weatherBgImg.setImageResource(R.drawable.testweatherimg_evening);
-        }else if(hourOfDay>=21 || hourOfDay<=6){
+        }else if(hourOfDay>=21 || hourOfDay<6){
             weatherBgImg.setImageResource(R.drawable.testweatherimg_night);
         }
     }
