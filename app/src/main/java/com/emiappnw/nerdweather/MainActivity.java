@@ -32,6 +32,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import com.bluejamesbond.text.DocumentView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -98,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
                         if (sharedPref.getBoolean("firstRun", true)) {
                             editor.putString("MaxTCStored", sharedPref.getString("tempStored", ""));
                             editor.putString("MinTCStored", sharedPref.getString("tempStored", ""));
-                            editor.putString("MaxLocStored", sharedPref.getString("locationStored", ""));
-                            editor.putString("MinLocStored", sharedPref.getString("locationStored", ""));
                             editor.putBoolean("firstRun", false);
                             editor.apply();
                         }
@@ -226,6 +228,11 @@ public class MainActivity extends AppCompatActivity {
         int maxC = Integer.parseInt(sharedPref.getString("MaxTCStored", ""));
         int minC = Integer.parseInt(sharedPref.getString("MinTCStored", ""));
 
+        // Get current Date and format it
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, yyyy");
+        String today = formatter.format(date);
+
         // The wheels of the bus go round and round...
         if (cTemp >= maxC) {
             maxC = cTemp;
@@ -234,16 +241,17 @@ public class MainActivity extends AppCompatActivity {
             String MaxTF = Integer.toString(maxF);
             editor.putString("MaxTCStored", MaxTC);
             editor.putString("MaxTFStored", MaxTF);
-            editor.putString("MaxLocStored", sharedPref.getString("locationStored", ""));
+            editor.putString("MaxLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
-        } else if (cTemp <= minC) {
+        }
+        if (cTemp <= minC) {
             minC = cTemp;
             int minF = (int) (1.8*minC)+32;
             String MinTC = Integer.toString(minC);
             String MinTF = Integer.toString(minF);
             editor.putString("MinTCStored", MinTC);
             editor.putString("MinTFStored", MinTF);
-            editor.putString("MinLocStored", sharedPref.getString("locationStored", ""));
+            editor.putString("MinLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
 
