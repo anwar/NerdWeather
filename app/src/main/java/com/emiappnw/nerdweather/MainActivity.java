@@ -21,6 +21,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -51,12 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
     TextView currentLocView, weatherDescriptionView, currentTempView, WindView, HumidityView, PressureView, maxTempCView, maxTempFView, maxDetailTextView, minTempCView, minTempFView, minDetailTextView;
     DocumentView FactView;
+    ImageView weatherBgImg;
+
+    // Initialized for comparison with hourOfDayToCheck
+    Calendar calendar = Calendar.getInstance();
+    int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Updates background on first run
+        background_updater();
 
         sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
@@ -69,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onLocationChanged(Location location) {
+
+                // Runs background_updater() every hour
+                calendar = Calendar.getInstance();
+                int hourOfDayToCheck = calendar.get(Calendar.HOUR_OF_DAY);
+                if (hourOfDayToCheck != hourOfDay){
+
+                    background_updater();
+                }
 
                 // Gets latitude and longitude and converts to String
                 double latitude = location.getLatitude();
@@ -190,6 +208,24 @@ public class MainActivity extends AppCompatActivity {
         // Location requested every second if permissions are granted using the GPS sensor
         locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
 
+    }
+
+    public void background_updater(){
+
+        weatherBgImg = findViewById(R.id.weatherBgImg);
+        // repeated to get an updated hourOfDay if hourOfDay != hourOfDayToCheck
+        calendar = Calendar.getInstance();
+        hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (hourOfDay >= 6 && hourOfDay <= 12) {
+            weatherBgImg.setImageResource(R.drawable.testweatherimg_morning);
+        }else if (hourOfDay >= 12 && hourOfDay <= 16){
+            weatherBgImg.setImageResource(R.drawable.testweatherimg_afternoon);
+        }else if(hourOfDay >=17 && hourOfDay<=21){
+            weatherBgImg.setImageResource(R.drawable.testweatherimg_evening);
+        }else if(hourOfDay>=21 || hourOfDay<=6){
+            weatherBgImg.setImageResource(R.drawable.testweatherimg_night);
+        }
     }
 
 

@@ -55,10 +55,10 @@ public class WeatherAPI {
                     String location = json.getString("name") + ", " + json.getJSONObject("sys").getString("country");
                     String description = details.getString("description").toUpperCase(Locale.US);
 
-                    //comment the line below for manual temperature input
+                    // Comment the line below for manual temperature input
                     String temperature = String.format(Locale.US,"%.0f", main.getDouble("temp"));
 
-                    //uncomment the line below if you want to manually input temperatures
+                    // Uncomment the line below if you want to manually input temperatures
 //                    String temperature = "-9";
 
                     String wind = String.format(Locale.US,"%.1f", json.getJSONObject("wind").getDouble("speed"));
