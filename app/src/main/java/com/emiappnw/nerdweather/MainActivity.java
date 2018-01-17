@@ -315,9 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void sharingIsCaring(View view) {
 
-        int maxToShare = Integer.parseInt(sharedPref.getString("MaxTCStored", ""));
-        int minToShare = Integer.parseInt(sharedPref.getString("MinTCStored", ""));
-        String textToShare = "Extreme temperatures that I have survived:\nMIN: " +minToShare+ "°C\nMAX: " +maxToShare+ "°C\nIncrease your knowledge when you check the weather! Get Nerd Weather today: https://github.com/EMI-Project/NerdWeather";
+        String textToShare = "Extreme temperatures that I have survived:\nMIN: " +sharedPref.getString("MinTCStored", "")+ "°C\nMAX: " +sharedPref.getString("MaxTCStored", "")+ "°C\nIncrease your knowledge when you check the weather! Get Nerd Weather today: https://goo.gl/VR96S4";
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Download Nerd Weather");

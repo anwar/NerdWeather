@@ -26,7 +26,6 @@
         android:id="@+id/currentTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:text="\u003F\u003F"
         android:textColor="@color/colorPrimary"
         android:textSize="70sp"
@@ -34,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showStatsDialog"
-        tools:text="\u003F\u003F" />
+        tools:text="32°" />
 
     <TextView
         android:id="@+id/currentLoc"
@@ -47,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentTemp"
-        tools:text="Location" />
+        tools:text="Dresden, Germany" />
 
     <TextView
         android:id="@+id/weatherDescription"
@@ -65,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentLoc"
-        tools:text="WEATHER CONDITION" />
+        tools:text="Really fucking hot" />
 
     <TextView
         android:id="@+id/Humidity"
@@ -147,8 +146,7 @@
             ext:documentView_insetPaddingRight="32dp"
             ext:documentView_insetPaddingTop="32dp"
             ext:documentView_reverse="false"
-            ext:documentView_text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, se."
+            ext:documentView_text="Loading interesting fact ipsum. Such Nerd much Weather, Wow! lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum, lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum. lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum. nerd nerd nerd nerd nerd nerd nerd nerd weather weather weather weather weather weather weather weather weather weather weather weather weather weather weather."
             ext:documentView_textAlignment="justified"
             ext:documentView_textColor="@android:color/tertiary_text_light"
             ext:documentView_textFormat="plain"
