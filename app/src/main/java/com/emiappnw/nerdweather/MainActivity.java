@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
                 asyncTask.execute(latStr, lonStr); // ("Latitude", "Longitude")
                 //-------------- Weather API Stuff --------------//
-
             }
 
             @Override
@@ -155,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         request_location();
-
     }
 
 
@@ -259,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
         // Show popup
         popupWindow.showAtLocation(mainLayout, Gravity.CENTER_HORIZONTAL, 0, -300);
 
-
         //===================== PopupWindow Stuff =====================//
         // Initial Data for the loop
         int cTemp = Integer.parseInt(sharedPref.getString("tempStored", ""));
@@ -282,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("MaxLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
+
         if (cTemp <= minC) {
             minC = cTemp;
             int minF = (int) (1.8*minC)+32;
@@ -300,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
         minTempFView = popupWindow.getContentView().findViewById(R.id.minTempF);
         minDetailTextView = popupWindow.getContentView().findViewById(R.id.minDetailText);
 
-
         maxTempCView.setText(sharedPref.getString("MaxTCStored", "")+" °C");
         maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" °F");
         maxDetailTextView.setText(sharedPref.getString("MaxLocStored", ""));
@@ -308,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
         minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" °F");
         minDetailTextView.setText(sharedPref.getString("MinLocStored", ""));
         //===================== PopupWindow Stuff =====================//
-
     }
 
     // Inject Calligraphy into Context
@@ -317,4 +313,16 @@ public class MainActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    public void sharingIsCaring(View view) {
+
+        int maxToShare = Integer.parseInt(sharedPref.getString("MaxTCStored", ""));
+        int minToShare = Integer.parseInt(sharedPref.getString("MinTCStored", ""));
+        String textToShare = "Extreme temperatures that I have survived:\nMIN: " +minToShare+ "°C\nMAX: " +maxToShare+ "°C\nIncrease your knowledge when you check the weather! Get Nerd Weather today: https://github.com/EMI-Project/NerdWeather";
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Download Nerd Weather");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
 }

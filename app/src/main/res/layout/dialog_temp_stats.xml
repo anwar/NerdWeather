@@ -105,6 +105,7 @@
         android:background="@drawable/share_button"
         android:text="Share"
         android:textColor="@android:color/white"
-        app:fontPath="fonts/nevis.ttf" />
+        app:fontPath="fonts/nevis.ttf"
+        android:onClick="sharingIsCaring"/>
 
 </RelativeLayout>

@@ -24,30 +24,30 @@
 
     <TextView
         android:id="@+id/currentTemp"
-        app:fontPath="fonts/nevis.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:text="\u003F\u003F"
         android:textColor="@color/colorPrimary"
         android:textSize="70sp"
-        android:clickable="true"
+        app:fontPath="fonts/nevis.ttf"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showStatsDialog"
-        tools:text="105F"
-        android:text="105F"/>
+        tools:text="\u003F\u003F" />
 
     <TextView
         android:id="@+id/currentLoc"
         app:fontPath="fonts/nevis.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dresden, Germany"
+        android:text="Getting Location"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentTemp"
-        tools:text="Dresden, Germany" />
+        tools:text="Location" />
 
     <TextView
         android:id="@+id/weatherDescription"
@@ -56,7 +56,7 @@
         android:layout_marginEnd="48dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="8dp"
-        android:text="Really fucking hot"
+        android:text="Getting Weather"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimary"
