@@ -299,10 +299,10 @@ public class MainActivity extends AppCompatActivity {
         minDetailTextView = popupWindow.getContentView().findViewById(R.id.minDetailText);
 
         maxTempCView.setText(sharedPref.getString("MaxTCStored", "")+" °C");
-        maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" °F");
+        maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" F");
         maxDetailTextView.setText(sharedPref.getString("MaxLocStored", ""));
         minTempCView.setText(sharedPref.getString("MinTCStored", "")+" °C");
-        minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" °F");
+        minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" F");
         minDetailTextView.setText(sharedPref.getString("MinLocStored", ""));
         //===================== PopupWindow Stuff =====================//
     }
