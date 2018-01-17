@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
-        // Updates background on first run
         background_updater();
 
         // Accesses location
@@ -106,10 +105,22 @@ public class MainActivity extends AppCompatActivity {
                     public void processFinish(String weather_location, String weather_description, String weather_temperature, String weather_wind, String weather_humidity, String weather_pressure) {
                         currentLocView.setText(weather_location);
                         weatherDescriptionView.setText(weather_description);
-                        currentTempView.setText(weather_temperature+"°");
+//                        currentTempView.setText(weather_temperature+"°C");
                         WindView.setText("W: "+weather_wind+ " m/s");
                         HumidityView.setText("H: "+weather_humidity+ "%");
                         PressureView.setText("P: "+weather_pressure+ " hPa");
+
+                       // Sets the current temperature according to the current displayed format
+                        String TempToCheck =  currentTempView.getText().toString();
+                        if (TempToCheck.contains("F")){
+
+                            int weather_temp = Integer.parseInt(weather_temperature);
+                            int intTempF = (int)((9.0/5.0)*weather_temp + 32);
+                            String strTempF = String.valueOf(intTempF);
+                            currentTempView.setText(strTempF+"F");
+
+                        } else currentTempView.setText(weather_temperature+"°C");
+
 
                         // Save current Temp and Location in SharedPreferences
                         editor.putString("tempStored", weather_temperature);
@@ -185,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Updates background on first run
     public void background_updater(){
 
         weatherBgImg = findViewById(R.id.weatherBgImg);
@@ -313,6 +325,30 @@ public class MainActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    // NOTE: APP CRASHES WHEN THE WEATHER HAS NOT BEEN UPDATED AND THE currentTemp FIELD IS TAPPED!
+    // Switches the temperature format when tapped
+    public void tempFormatSwitch(View view){
+        String strTemp =  currentTempView.getText().toString();
+
+        if (strTemp.contains("°C")){
+
+            strTemp = strTemp.substring(0, strTemp.length() - 2);
+            int intTempC = Integer.parseInt(strTemp);
+            int intTempF = (int)((9.0/5.0)*intTempC + 32);
+            String strTempF = String.valueOf(intTempF);
+            currentTempView.setText(strTempF+"F");
+
+        } else if (strTemp.contains("F")){
+
+            strTemp = strTemp.substring(0, strTemp.length() - 1);
+            int intTempF = Integer.parseInt(strTemp);
+            int intTempC = (int)(((intTempF -32)*5)/9);
+            String strTempC = String.valueOf(intTempC);
+            currentTempView.setText(strTempC+"°C");
+        }
+    };
+
+    // A simple share feature
     public void sharingIsCaring(View view) {
 
         int maxToShare = Integer.parseInt(sharedPref.getString("MaxTCStored", ""));

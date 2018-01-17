@@ -34,7 +34,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showStatsDialog"
-        tools:text="\u003F\u003F" />
+        tools:text="\u003F\u003F"
+        android:onClick="tempFormatSwitch"/>
 
     <TextView
         android:id="@+id/currentLoc"
