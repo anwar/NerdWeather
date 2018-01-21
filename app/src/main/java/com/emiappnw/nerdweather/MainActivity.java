@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     public void onCurrentTempClick(View view) {
         if (sharedPref.getString("tempUnitStored", "").equals("C")) {
             editor.putString("tempUnitStored", "F");
@@ -290,22 +291,18 @@ public class MainActivity extends AppCompatActivity {
         // The wheels of the bus go round and round...
         if (cTemp >= maxC) {
             maxC = cTemp;
-            int maxF = (int) (1.8*maxC)+32;
-            String MaxTC = Integer.toString(maxC);
-            String MaxTF = Integer.toString(maxF);
-            editor.putString("MaxTCStored", MaxTC);
-            editor.putString("MaxTFStored", MaxTF);
+            int maxF = (9/5)*(maxC)+32;
+            editor.putString("MaxTCStored", Integer.toString(maxC));
+            editor.putString("MaxTFStored", Integer.toString(maxF));
             editor.putString("MaxLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
 
         if (cTemp <= minC) {
             minC = cTemp;
-            int minF = (int) (1.8*minC)+32;
-            String MinTC = Integer.toString(minC);
-            String MinTF = Integer.toString(minF);
-            editor.putString("MinTCStored", MinTC);
-            editor.putString("MinTFStored", MinTF);
+            int minF = (9/5)*(minC)+32;
+            editor.putString("MinTCStored", Integer.toString(minC));
+            editor.putString("MinTFStored", Integer.toString(minF));
             editor.putString("MinLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
@@ -318,10 +315,10 @@ public class MainActivity extends AppCompatActivity {
         minDetailTextView = popupWindow.getContentView().findViewById(R.id.minDetailText);
 
         maxTempCView.setText(sharedPref.getString("MaxTCStored", "")+" °C");
-        maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" F");
+        maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" °F");
         maxDetailTextView.setText(sharedPref.getString("MaxLocStored", ""));
         minTempCView.setText(sharedPref.getString("MinTCStored", "")+" °C");
-        minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" F");
+        minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" °F");
         minDetailTextView.setText(sharedPref.getString("MinLocStored", ""));
         //===================== PopupWindow Stuff =====================//
     }
