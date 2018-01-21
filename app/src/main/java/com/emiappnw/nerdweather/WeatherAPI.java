@@ -1,5 +1,7 @@
 package com.emiappnw.nerdweather;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask; // AsyncTask enables proper and easy use of the UI thread.
 import android.util.Log; // API for sending log output.
 
@@ -10,6 +12,7 @@ import java.io.BufferedReader; // Read text from an input-stream and buffer the 
 import java.io.InputStreamReader; // Reads bytes and decodes them into characters using a specified charset.
 import java.net.HttpURLConnection; // A URLConnection with support for HTTP-specific features.
 import java.net.URL; // Self-explanatory.
+import java.util.List;
 import java.util.Locale; // Self-explanatory.
 
 public class WeatherAPI {
@@ -44,7 +47,7 @@ public class WeatherAPI {
             return jsonWeather;
         }
 
-        // Get the weather data from JSON and and assign it to our variables
+        // Get the weather data from JSON and assign it to our variables
         @Override
         protected void onPostExecute(JSONObject json) {
             try {
@@ -52,7 +55,19 @@ public class WeatherAPI {
                     JSONObject details = json.getJSONArray("weather").getJSONObject(0);
                     JSONObject main = json.getJSONObject("main");
 
-                    String location = json.getString("name") + ", " + json.getJSONObject("sys").getString("country");
+
+                    String lat = json.getJSONObject("coord").getString("lat");
+                    String lon = json.getJSONObject("coord").getString("lon");
+
+                    //String state = address.get(0).getAdminArea();
+                    String city = json.getString("name");
+                    String country = json.getJSONObject("sys").getString("country");
+                    String location;
+                    if (country.equals("US")) {
+                        location = city + ", " + country ;
+                    } else {
+                        location = city + ", " + country;
+                    }
                     String description = details.getString("description").toUpperCase(Locale.US);
 
                     // Comment the line below for manual temperature input
@@ -98,4 +113,5 @@ public class WeatherAPI {
             return null;
         }
     }
+
 }

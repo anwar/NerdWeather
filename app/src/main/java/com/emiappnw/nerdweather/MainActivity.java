@@ -36,7 +36,6 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import com.bluejamesbond.text.DocumentView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     public void processFinish(String weather_location, String weather_description, String weather_temperature, String weather_wind, String weather_humidity, String weather_pressure) {
                         currentLocView.setText(weather_location);
                         weatherDescriptionView.setText(weather_description);
-                        currentTempView.setText(weather_temperature+"°");
+                        displayTempUnit(weather_temperature);
                         WindView.setText("W: "+weather_wind+ " m/s");
                         HumidityView.setText("H: "+weather_humidity+ "%");
                         PressureView.setText("P: "+weather_pressure+ " hPa");
@@ -226,6 +225,26 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+    public void onCurrentTempClick(View view) {
+        if (sharedPref.getString("tempUnitStored", "").equals("C")) {
+            editor.putString("tempUnitStored", "F");
+            editor.apply();
+        }
+        else {
+            editor.putString("tempUnitStored", "C");
+            editor.apply();
+        }
+        displayTempUnit(sharedPref.getString("tempStored", ""));
+    }
+
+    public void displayTempUnit(String weather_temperature) {
+        if (sharedPref.getString("tempUnitStored", "").equals("C")) {
+            currentTempView.setText(weather_temperature + "C");
+        }
+        else {
+            currentTempView.setText(String.valueOf(Integer.parseInt(weather_temperature)*(9/5) + 32) + "F");
         }
     }
 

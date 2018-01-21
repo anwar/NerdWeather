@@ -24,23 +24,25 @@
 
     <TextView
         android:id="@+id/currentTemp"
+        app:fontPath="fonts/nevis.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="\u003F\u003F"
         android:textColor="@color/colorPrimary"
         android:textSize="70sp"
-        app:fontPath="fonts/nevis.ttf"
+        android:clickable="true"
+        android:onClick="onCurrentTempClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showStatsDialog"
-        tools:text="32°" />
+        tools:text="105F"
+        android:text="105F"/>
 
     <TextView
         android:id="@+id/currentLoc"
         app:fontPath="fonts/nevis.ttf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Getting Location"
+        android:text="Dresden, Germany"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +57,7 @@
         android:layout_marginEnd="48dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="8dp"
-        android:text="Getting Weather"
+        android:text="Really fucking hot"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimary"
@@ -64,7 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentLoc"
-        tools:text="Really fucking hot" />
+        tools:text="WEATHER CONDITION" />
 
     <TextView
         android:id="@+id/Humidity"
@@ -85,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:text="Pressure"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
@@ -106,7 +109,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/weatherBgImg"
         app:layout_constraintEnd_toStartOf="@+id/Humidity"
         app:layout_constraintHorizontal_bias="0.701"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginRight="16dp" />
 
     <ImageButton
         android:id="@+id/showStatsDialog"
@@ -146,7 +150,8 @@
             ext:documentView_insetPaddingRight="32dp"
             ext:documentView_insetPaddingTop="32dp"
             ext:documentView_reverse="false"
-            ext:documentView_text="Loading interesting fact ipsum. Such Nerd much Weather, Wow! lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum, lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum. lorem emi projekt ipsum lorem emi projekt ipsum lorem emi projekt ipsum. nerd nerd nerd nerd nerd nerd nerd nerd weather weather weather weather weather weather weather weather weather weather weather weather weather weather weather."
+            ext:documentView_text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, se."
             ext:documentView_textAlignment="justified"
             ext:documentView_textColor="@android:color/tertiary_text_light"
             ext:documentView_textFormat="plain"
