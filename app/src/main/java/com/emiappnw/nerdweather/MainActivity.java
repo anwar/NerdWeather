@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
                     public void processFinish(String weather_location, String weather_description, String weather_temperature, String weather_wind, String weather_humidity, String weather_pressure) {
                         currentLocView.setText(weather_location);
                         weatherDescriptionView.setText(weather_description);
+                        // Update the fact according to the current temperature
+                        facts_parser(weather_temperature);
+
                         displayTempUnit(weather_temperature);
                         WindView.setText("W: "+weather_wind+ " m/s");
                         HumidityView.setText("H: "+weather_humidity+ "%");
@@ -123,14 +127,12 @@ public class MainActivity extends AppCompatActivity {
                             editor.apply();
                         }
 
-                        // Update the fact according to the current temperature
-                        facts_parser(weather_temperature);
-
                     }
                 });
 
                 asyncTask.execute(latStr, lonStr); // ("Latitude", "Longitude")
                 //-------------- Weather API Stuff --------------//
+
             }
 
             @Override
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         request_location();
+
     }
 
 
@@ -191,13 +194,13 @@ public class MainActivity extends AppCompatActivity {
         hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
 
         if (hourOfDay >= 6 && hourOfDay <= 12) {
-            weatherBgImg.setImageResource(R.drawable.testweatherimg_morning);
+            weatherBgImg.setImageResource(R.drawable.weatherimg_morning);
         } else if (hourOfDay >= 12 && hourOfDay <= 16) {
-            weatherBgImg.setImageResource(R.drawable.testweatherimg_afternoon);
-        } else if (hourOfDay >= 17 && hourOfDay <= 21) {
-            weatherBgImg.setImageResource(R.drawable.testweatherimg_evening);
-        } else if (hourOfDay >= 21 || hourOfDay < 6) {
-            weatherBgImg.setImageResource(R.drawable.testweatherimg_night);
+            weatherBgImg.setImageResource(R.drawable.weatherimg_afternoon);
+        } else if (hourOfDay >= 17 && hourOfDay <= 20) {
+            weatherBgImg.setImageResource(R.drawable.weatherimg_evening);
+        } else if (hourOfDay >= 20 || hourOfDay < 6) {
+            weatherBgImg.setImageResource(R.drawable.weatherimg_night);
         }
     }
 
@@ -227,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     public void onCurrentTempClick(View view) {
         if (sharedPref.getString("tempUnitStored", "").equals("C")) {
             editor.putString("tempUnitStored", "F");
@@ -245,11 +247,22 @@ public class MainActivity extends AppCompatActivity {
             currentTempView.setText(weather_temperature + "C");
         }
         else {
-            currentTempView.setText(String.valueOf(Integer.parseInt(weather_temperature)*(9/5) + 32) + "F");
+            int fahrenheit = (int) Math.round(Integer.parseInt(weather_temperature)*1.8 + 32);
+            currentTempView.setText(String.valueOf(fahrenheit) + "F");
         }
     }
 
     public void onButtonShowPopupWindowClick(View view) {
+
+        //creates MP
+        MediaPlayer mp = MediaPlayer.create(this, R.raw.krane_snare);
+        try {
+            if (mp.isPlaying()) {
+                mp.stop();
+                mp.release();
+                mp = MediaPlayer.create(this, R.raw.krane_snare);
+            } mp.start();
+        } catch(Exception e) { e.printStackTrace(); }
 
         // Reference main layout
         ConstraintLayout mainLayout = findViewById(R.id.mainLayout);
@@ -277,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
         // Show popup
         popupWindow.showAtLocation(mainLayout, Gravity.CENTER_HORIZONTAL, 0, -300);
 
+
         //===================== PopupWindow Stuff =====================//
         // Initial Data for the loop
         int cTemp = Integer.parseInt(sharedPref.getString("tempStored", ""));
@@ -291,18 +305,21 @@ public class MainActivity extends AppCompatActivity {
         // The wheels of the bus go round and round...
         if (cTemp >= maxC) {
             maxC = cTemp;
-            int maxF = (9/5)*(maxC)+32;
-            editor.putString("MaxTCStored", Integer.toString(maxC));
-            editor.putString("MaxTFStored", Integer.toString(maxF));
+            int maxF = (int) (1.8*maxC)+32;
+            String MaxTC = Integer.toString(maxC);
+            String MaxTF = Integer.toString(maxF);
+            editor.putString("MaxTCStored", MaxTC);
+            editor.putString("MaxTFStored", MaxTF);
             editor.putString("MaxLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
-
         if (cTemp <= minC) {
             minC = cTemp;
-            int minF = (9/5)*(minC)+32;
-            editor.putString("MinTCStored", Integer.toString(minC));
-            editor.putString("MinTFStored", Integer.toString(minF));
+            int minF = (int) (1.8*minC)+32;
+            String MinTC = Integer.toString(minC);
+            String MinTF = Integer.toString(minF);
+            editor.putString("MinTCStored", MinTC);
+            editor.putString("MinTFStored", MinTF);
             editor.putString("MinLocStored", sharedPref.getString("locationStored", "")+"  -  "+today);
             editor.apply();
         }
@@ -314,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
         minTempFView = popupWindow.getContentView().findViewById(R.id.minTempF);
         minDetailTextView = popupWindow.getContentView().findViewById(R.id.minDetailText);
 
+
         maxTempCView.setText(sharedPref.getString("MaxTCStored", "")+" °C");
         maxTempFView.setText(" / "+sharedPref.getString("MaxTFStored", "")+" °F");
         maxDetailTextView.setText(sharedPref.getString("MaxLocStored", ""));
@@ -321,6 +339,7 @@ public class MainActivity extends AppCompatActivity {
         minTempFView.setText(" / "+sharedPref.getString("MinTFStored", "")+" °F");
         minDetailTextView.setText(sharedPref.getString("MinLocStored", ""));
         //===================== PopupWindow Stuff =====================//
+
     }
 
     // Inject Calligraphy into Context
@@ -339,4 +358,5 @@ public class MainActivity extends AppCompatActivity {
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
     }
+
 }

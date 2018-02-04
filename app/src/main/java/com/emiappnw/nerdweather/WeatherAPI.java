@@ -71,7 +71,11 @@ public class WeatherAPI {
                     String description = details.getString("description").toUpperCase(Locale.US);
 
                     // Comment the line below for manual temperature input
+
                     String temperature = String.format(Locale.US,"%.0f", main.getDouble("temp"));
+                    if (temperature.equals("-0")) {
+                        temperature = "0";
+                    }
 
                     // Uncomment the line below if you want to manually input temperatures
 //                    String temperature = "-9";
