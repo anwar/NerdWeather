@@ -18,7 +18,7 @@ import java.util.Locale; // Self-explanatory.
 public class WeatherAPI {
 
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric";
-    private static final String API_KEY = "d87d09e51607cadfe08107106806f23a";
+    private static final String API_KEY = "your-openweathermap-api-key";
 
 
     public interface AsyncResponse {
@@ -59,7 +59,6 @@ public class WeatherAPI {
                     String lat = json.getJSONObject("coord").getString("lat");
                     String lon = json.getJSONObject("coord").getString("lon");
 
-                    //String state = address.get(0).getAdminArea();
                     String city = json.getString("name");
                     String country = json.getJSONObject("sys").getString("country");
                     String location;
